@@ -14,8 +14,6 @@ int duration = 0; // 밀리함수 변수 선언 끝
 
 LiquidCrystal lcd(8,9,10,11,12,13);
 
-
-
 struct  //DHT22용 스트럭처
 {
     uint32_t total;
