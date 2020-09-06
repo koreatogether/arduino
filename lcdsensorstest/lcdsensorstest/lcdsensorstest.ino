@@ -1,4 +1,5 @@
-// 온습도 센서 DHT22 추가  20년 9월 06일 
+// 온습도 센서 DHT22 추가  20년 9월 06일
+// delay 를 없애기 위한 코드 작성  20년 9월 6일  
 
 #include <dht.h>  // dht22용 라이브러리 출처 https://github.com/RobTillaart/DHTlib
 
@@ -19,7 +20,7 @@ struct  //DHT22용 스트럭처
 } stat = { 0,0,0,0,0,0,0,0};
 
 void setup() {
-    Serial.begin(1152000);  //기본 시리얼 속도 1152000
+    Serial.begin(115200);  //기본 시리얼 속도 1152000
     
     Serial.println("dht22_test.ino");  //DHT22용 setup 선언시작
     Serial.print("LIBRARY VERSION: ");
