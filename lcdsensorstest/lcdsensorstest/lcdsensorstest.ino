@@ -22,7 +22,7 @@ struct  //DHT22용 스트럭처
     uint32_t ack_l;
     uint32_t ack_h;
     uint32_t unknown;
-} stat = { 0,0,0,0,0,0,0,0};
+} stat = { 0,0,0,0,0,0,0,0};  //DHT22용 스트럭처 끝 
 
 void setup() {
     pre_time = millis(); // delay를 없애기위한 밀리함수 setup함수내 선언 
