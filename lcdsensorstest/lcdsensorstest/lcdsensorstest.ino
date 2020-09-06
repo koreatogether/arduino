@@ -123,6 +123,6 @@ void loop()
     lcd.print(DHT.humidity);
     lcd.write(B00100101); // 0816 lcd에 나타날 문구 끝 
     pre_time = cur_time;  // 밀리함수 끝 
-}
+ }
 }
 
