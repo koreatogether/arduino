@@ -1,6 +1,6 @@
 // 온습도 센서 DHT22 추가  20년 9월 06일
 // delay 를 없애기 위한 코드 작성  20년 9월 6일
-// 0816 lcd 추가  20sus 9월 6일   
+// 0816 lcd 추가  20년 9월 6일   
 
 #include <dht.h>  // dht22용 라이브러리 출처 https://github.com/RobTillaart/DHTlib
 #include <LiquidCrystal.h>
@@ -122,11 +122,11 @@ void loop()
     lcd.setCursor(0,1);
     lcd.print(DHT.humidity);
     lcd.write(B00100101); // 0816 lcd에 나타날 문구 끝 
-    pre_time = cur_time;
+    pre_time = cur_time;  // 밀리함수 끝 
 }
 }
 
-
+//  서브라임이 연동되는지 체크하기 위한 줄 
     //delay(2000); // 최소 2초의 딜레이가 필요한 DHT22 센서 
 
 
