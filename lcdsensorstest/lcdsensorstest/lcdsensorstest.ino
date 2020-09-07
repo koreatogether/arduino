@@ -1,6 +1,7 @@
 // 온습도 센서 DHT22 추가  20년 9월 06일
 // delay 를 없애기 위한 코드 작성  20년 9월 6일
-// 0816 lcd 추가  20년 9월 6일   
+// 0816 lcd 추가  20년 9월 6일 
+//>>> 여기서 마스터 브랜치 분리   
 
 #include <dht.h>  // dht22용 라이브러리 출처 https://github.com/RobTillaart/DHTlib
 #include <LiquidCrystal.h>
