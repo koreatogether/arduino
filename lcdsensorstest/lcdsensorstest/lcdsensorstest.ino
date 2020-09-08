@@ -21,6 +21,8 @@ dht DHT; // dht 를 DHT로 쓰겠다 선언
 unsigned long cur_time = 0;
 unsigned long pre_time = 0;
 unsigned long pre_time2 = 0;
+unsigned long pre_time3 = 0;
+unsigned long pre_time4 = 0;
 
 LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 
@@ -77,7 +79,7 @@ void setup()
 
 void loop()
 {
-    int number = data.PM_AE_UG_10_0;
+    
     cur_time = millis(); // delay를 없애기 위한 밀리함수 loop함수내 선언
     //cur_time2 = millis();
     if (cur_time - pre_time >= 7000)
@@ -158,12 +160,10 @@ void loop()
     }
     if (cur_time - pre_time2 >= 10000)
     {
-        pre_time2 = cur_time;
+        pre_time2 = cur_time; // wakeup에 쓰일 밀리함수 2
 
         Serial.println("Waking up, wait 3 seconds for stable readings...");
   pms.wakeUp();
-  delay(7000);
-
   Serial.println("Send read request...");
   pms.requestRead();
 
@@ -178,18 +178,22 @@ void loop()
 
     Serial.print("PM 10.0 (ug/m3): ");
     Serial.println(data.PM_AE_UG_10_0);
+    pms.sleep();
     
   }
   else
   {
     Serial.println("No data.");
+    pms.sleep();
   }
-
+  /*if ( cur_time - pre_time3 >= 15000)
+  {
+      pre_time3 = cur_time;
   Serial.println("Going to sleep for 10 seconds.");
-  pms.sleep();
-  delay(10000);
-                
+  
+  }*/
     }
+    
     u8g.firstPage();
     do
     {
