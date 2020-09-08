@@ -6,16 +6,19 @@
 // 미세먼지 센서 plantower  pms a003 추가 테스트 소스출처  : https://blog.naver.com/PostView.nhn?blogId=compass1111&logNo=221283850507
 // 미세먼지 센서 코드하고 온습도센서 코드하고 부딪히는것같아 여기서 커밋한번하고 분리해서 코드를 짜봐야곘음 
 // 미세먼지 센서 배열하고 온습도 센서 배열하고 뒤섞이는건가 ?  ==> 밀리함수의 순서를 제대로 정해주어야 양쪽 함수가 시간대로 작동을 하는것이므로 이번에 제대로 밀리함수 순서 배울것!!
+// U8glib을 활용해서 led 통해서 미세먼지 디스플레이하기 
    
 #include <dht.h> // dht22용 라이브러리 출처 https://github.com/RobTillaart/DHTlib
 #include <LiquidCrystal.h>
 #include <SoftwareSerial.h>
 #include <PMS.h>  // by mariusz kacki
+#include <U8glib.h>
 
 #define DHT22_PIN 7 // DHT22 신호핀을 7번으로 하겠다 선언
 
 dht DHT; // dht 를 DHT로 쓰겠다 선언
 
+unsigned long cur_time = 0;
 unsigned long pre_time = 0;
 unsigned long pre_time2 = 0;
 
@@ -24,6 +27,19 @@ LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
 SoftwareSerial myserial(6, 5); // 소프트시리얼포트로 uno의 6번핀(rx) , 5번핀(tx)를 쓰겠다 선언
 PMS pms(myserial);
 PMS::DATA data;
+
+U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_DEV_0|U8G_I2C_OPT_NO_ACK|U8G_I2C_OPT_FAST); // Fast I2C / TWI  
+
+/*void draw(void){
+    u8g.setFont(u8g_font_6x10);
+    //u8g.setFontRefHeightExtendedText();
+    //u8g.setDefaultForegroundColor();
+    //u8g.setFontPosTop();
+    u8g.drawStr(0,10,"hellow");
+    u8g.setPrintPos(0, 20 );
+    u8g.print(0,20, number);
+}*/
+
 
 struct // DHT22용 스트럭처
 {
@@ -61,6 +77,7 @@ void setup()
 
 void loop()
 {
+    int number = data.PM_AE_UG_10_0;
     cur_time = millis(); // delay를 없애기 위한 밀리함수 loop함수내 선언
     //cur_time2 = millis();
     if (cur_time - pre_time >= 7000)
@@ -161,6 +178,7 @@ void loop()
 
     Serial.print("PM 10.0 (ug/m3): ");
     Serial.println(data.PM_AE_UG_10_0);
+    
   }
   else
   {
@@ -172,4 +190,20 @@ void loop()
   delay(10000);
                 
     }
+    u8g.firstPage();
+    do
+    {
+        u8g.setFont(u8g_font_6x10);
+    //u8g.setFontRefHeightExtendedText();
+    //u8g.setDefaultForegroundColor();
+    //u8g.setFontPosTop();
+    u8g.drawStr(0,10,"hellow");
+    u8g.setPrintPos(0, 20 );
+    u8g.print(data.PM_AE_UG_10_0);
+    }while(u8g.nextPage());
+    
+
+
 }
+
+
