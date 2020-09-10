@@ -6,7 +6,9 @@
 // 미세먼지 센서 plantower  pms a003 추가 테스트 소스출처  : https://blog.naver.com/PostView.nhn?blogId=compass1111&logNo=221283850507
 // 미세먼지 센서 코드하고 온습도센서 코드하고 부딪히는것같아 여기서 커밋한번하고 분리해서 코드를 짜봐야곘음 
 // 미세먼지 센서 배열하고 온습도 센서 배열하고 뒤섞이는건가 ?  ==> 밀리함수의 순서를 제대로 정해주어야 양쪽 함수가 시간대로 작동을 하는것이므로 이번에 제대로 밀리함수 순서 배울것!!
-// U8glib을 활용해서 led 통해서 미세먼지 디스플레이하기 
+// U8glib을 활용해서 led 통해서 미세먼지 디스플레이하기  -> 20/09/10 성공 
+//  이해력이 높지 않은 관계로 코드만 조합 했을뿐입니다.  이걸로 끝마치겠습니다. 
+// 보드 : 아두이노 우노 r3 기준입니다.  나노는 아직 못했습니다만 크게 다르지 않을거라 봅니다. 
    
 #include <dht.h> // dht22용 라이브러리 출처 https://github.com/RobTillaart/DHTlib
 #include <LiquidCrystal.h>
@@ -19,20 +21,19 @@
 dht DHT; // dht 를 DHT로 쓰겠다 선언
 
 unsigned long cur_time = 0;
+unsigned long cur_time2 = 0;
 unsigned long pre_time = 0;
 unsigned long pre_time2 = 0;
-unsigned long pre_time3 = 0;
-unsigned long pre_time4 = 0;
 
-LiquidCrystal lcd(8, 9, 10, 11, 12, 13);
+LiquidCrystal lcd(8, 9, 10, 11, 12, 13);  // 데이타시트의 6개 데이타 관련 핀 
 
 SoftwareSerial myserial(6, 5); // 소프트시리얼포트로 uno의 6번핀(rx) , 5번핀(tx)를 쓰겠다 선언
 PMS pms(myserial);
 PMS::DATA data;
 
-U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_DEV_0|U8G_I2C_OPT_NO_ACK|U8G_I2C_OPT_FAST); // Fast I2C / TWI  
+U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_DEV_0|U8G_I2C_OPT_NO_ACK|U8G_I2C_OPT_FAST); // Fast I2C / TWI  를 썼고 본인 oled에 따라서 삭제후 추가하시면 됩니다. 
 
-/*void draw(void){
+/*void draw(void){  // oled 화면 더 만들때 필요한 구문이라남겨둠 
     u8g.setFont(u8g_font_6x10);
     //u8g.setFontRefHeightExtendedText();
     //u8g.setDefaultForegroundColor();
@@ -72,21 +73,21 @@ void setup()
     lcd.clear(); // 0816 lcd 사용하기전 화면 청소
     myserial.begin(9600);
     pms.passiveMode();
+    pms.sleep();
+    
 
-    pre_time = millis();
-    pre_time2 = pre_time;
+;
 }
 
 void loop()
 {
     
-    cur_time = millis(); // delay를 없애기 위한 밀리함수 loop함수내 선언
-    //cur_time2 = millis();
+    cur_time = millis(); // delay를 없애기 위한 밀리함수 loop함수내 선언        
     if (cur_time - pre_time >= 7000)
     {
         pre_time = cur_time; // 밀리함수 끝
-        // 현재 시간 - 과거시간 체크를 하는 함수 시작 및 조건 7초마다  1000 = 1초
-        // DHT22 READ DATA
+                             // 현재 시간 - 과거시간 체크를 하는 함수 시작 및 조건 7초마다  1000 = 1초
+                             // DHT22 READ DATA
         Serial.print("DHT22, \t");
         uint32_t start = micros();
         int chk = DHT.read22(DHT22_PIN);
@@ -152,17 +153,17 @@ void loop()
         }
         lcd.setCursor(0, 0); // 0816 lcd에 나타날 문구 시작
         lcd.print(DHT.temperature);
-        lcd.write(B11011111); // 특수문자는 print가 아닌 write로 시작해야 한다.
+        lcd.write(B11011111); // 특수문자는 print가 아닌 write로 시작해야 한다. 데이타 시트에 특수문자 숫자 나옴 
         lcd.print("C");
         lcd.setCursor(0, 1);
         lcd.print(DHT.humidity);
         lcd.write(B00100101); // 0816 lcd에 나타날 문구 끝
     }
-    if (cur_time - pre_time2 >= 10000)
+     
+    if( cur_time - pre_time2 >= 6000)
     {
-        pre_time2 = cur_time; // wakeup에 쓰일 밀리함수 2
-
-        Serial.println("Waking up, wait 3 seconds for stable readings...");
+        pre_time2 = cur_time;
+           Serial.println("Waking up, wait 3 seconds for stable readings...");
   pms.wakeUp();
   Serial.println("Send read request...");
   pms.requestRead();
@@ -178,32 +179,38 @@ void loop()
 
     Serial.print("PM 10.0 (ug/m3): ");
     Serial.println(data.PM_AE_UG_10_0);
-    pms.sleep();
     
-  }
+    }
+  
   else
   {
     Serial.println("No data.");
-    pms.sleep();
-  }
-  /*if ( cur_time - pre_time3 >= 15000)
-  {
-      pre_time3 = cur_time;
-  Serial.println("Going to sleep for 10 seconds.");
-  
-  }*/
-    }
     
+  }
+    }
+  
     u8g.firstPage();
     do
     {
-        u8g.setFont(u8g_font_6x10);
+    u8g.setFont(u8g_font_7x14);
     //u8g.setFontRefHeightExtendedText();
     //u8g.setDefaultForegroundColor();
     //u8g.setFontPosTop();
-    u8g.drawStr(0,10,"hellow");
-    u8g.setPrintPos(0, 20 );
+    u8g.drawStr(0,10,"DUST METER");
+    
+    u8g.setPrintPos(0, 31 );
+    u8g.print("PM 1.0 :");
+    u8g.setPrintPos(70, 31 );
+    u8g.print(data.PM_AE_UG_1_0);
+    u8g.setPrintPos(0, 44 );
+    u8g.print("PM 2.5 :");
+    u8g.setPrintPos(70, 44 );
+    u8g.print(data.PM_AE_UG_2_5);
+    u8g.setPrintPos(0, 59 );
+    u8g.print("PM 10.0:");
+    u8g.setPrintPos(70, 59 );
     u8g.print(data.PM_AE_UG_10_0);
+
     }while(u8g.nextPage());
     
 
