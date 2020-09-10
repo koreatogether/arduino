@@ -315,3 +315,5 @@ build/sketch/lcdsensorstest.ino.cpp.o
 build/build.options.json
 .vscode/arduino.json
 .vscode/arduino.json
+.vscode/arduino.json
+.vscode/c_cpp_properties.json
