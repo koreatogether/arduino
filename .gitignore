@@ -1,5 +1,10 @@
 .vscode/c_cpp_properties.json
 .vscode\arduino.json
+<<<<<<< HEAD
+=======
+build/sketch/lcdsensorstest.ino.cpp.o
+build/build.options.json
+>>>>>>> gassensor
 build/lcdsensorstest.ino.eep
 build/lcdsensorstest.ino.elf
 build/lcdsensorstest.ino.hex
@@ -311,9 +316,12 @@ build/libraries/U8glib/clib/u8g_virtual_screen.c.o
 build/preproc/ctags_target_for_gcc_minus_e.cpp
 build/sketch/lcdsensorstest.ino.cpp
 build/sketch/lcdsensorstest.ino.cpp.d
+<<<<<<< HEAD
 build/sketch/lcdsensorstest.ino.cpp.o
 build/build.options.json
 .vscode/arduino.json
 .vscode/arduino.json
 .vscode/arduino.json
 .vscode/c_cpp_properties.json
+=======
+>>>>>>> gassensor
