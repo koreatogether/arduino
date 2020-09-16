@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:uno",
     "port": "COM5",
-    "sketch": "lcdsensorstest\\lcdsensorstest\\lcdsensorstest.ino",
-    "output":".\\build"
+    "sketch": "arduinopack\\ethernet\\ethernet.ino",
+    "output": ".\\build"
 }
