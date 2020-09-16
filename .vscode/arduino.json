@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:uno",
-    "port": "COM5",
-    "sketch": "lcdsensorstest\\lcdsensorstest\\lcdsensorstest.ino",
+    "port": "COM6",
+    "sketch": "Display\\GLCD-LG128643-SMLYH6V\\GLCD-LG128643-SMLYH6V.ino",
     "output":".\\build"
 }
