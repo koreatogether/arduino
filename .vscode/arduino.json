@@ -1,6 +1,9 @@
 {
     "board": "arduino:avr:uno",
-    "port": "COM5",
-    "sketch": "arduinopack\\ethernet\\ethernet.ino",
-    "output": ".\\build"
+<<<<<<< HEAD
+=======
+    "port": "COM6",
+    "sketch": "Display\\GLCD-LG128643-SMLYH6V\\GLCD-LG128643-SMLYH6V.ino",
+    "output":".\\build"
+>>>>>>> a17067016c1a92eafe29ca60b16777e93b7628f1
 }
