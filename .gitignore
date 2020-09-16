@@ -325,3 +325,12 @@ build/build.options.json
 .vscode/c_cpp_properties.json
 =======
 >>>>>>> gassensor
+build/GLCD-LG128643-SMLYH6V.ino.eep
+build/GLCD-LG128643-SMLYH6V.ino.elf
+build/GLCD-LG128643-SMLYH6V.ino.hex
+build/GLCD-LG128643-SMLYH6V.ino.with_bootloader.bin
+build/GLCD-LG128643-SMLYH6V.ino.with_bootloader.hex
+build/includes.cache
+build/sketch/GLCD-LG128643-SMLYH6V.ino.cpp
+build/sketch/GLCD-LG128643-SMLYH6V.ino.cpp.d
+build/sketch/GLCD-LG128643-SMLYH6V.ino.cpp.o
