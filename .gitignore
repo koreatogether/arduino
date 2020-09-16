@@ -325,3 +325,4 @@ build/build.options.json
 .vscode/c_cpp_properties.json
 =======
 >>>>>>> gassensor
+.vscode/arduino.json
