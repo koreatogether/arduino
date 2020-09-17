@@ -43,6 +43,8 @@
 
 유튜브 다른핀 연결  영상 https://youtu.be/BulAOfyVnLs
 
+VER-001은 U8glib 예제를 통해서 공부하고자 임의 이름을 붙인겁니다.
+원본 예제 U8gLogo
 */
 
 #include <U8glib.h>
@@ -50,49 +52,96 @@
 
 U8GLIB_KS0108_128 u8g(8, 9, 10, 11, 4, 5, 6, 7, 18, 14, 15, 17, 16); 		// 8Bit Com: D0..D7: 8,9,10,11,4,5,6,7 en=18, cs1=14, cs2=15,di=17,rw=16
 
-void draw(void) {
-  // graphic commands to redraw the complete screen should be placed here  
-  u8g.setFont(u8g_font_unifont);
-  //u8g.setFont(u8g_font_osb21);
-  u8g.drawStr( 0, 22, "hsm Hello World!");
-}
 
-
-
-void setup (){
-     // flip screen, if required
-  // u8g.setRot180();
-  
-  // set SPI backup if required
-  //u8g.setHardwareBackup(u8g_backup_avr_spi);
-
-  // assign default color value
-  if ( u8g.getMode() == U8G_MODE_R3G3B2 ) {
-    u8g.setColorIndex(255);     // white
-  }
-  else if ( u8g.getMode() == U8G_MODE_GRAY2BIT ) {
-    u8g.setColorIndex(3);         // max intensity
-  }
-  else if ( u8g.getMode() == U8G_MODE_BW ) {
-    u8g.setColorIndex(1);         // pixel on
-  }
-  else if ( u8g.getMode() == U8G_MODE_HICOLOR ) {
-    u8g.setHiColorByRGB(255,255,255);
-    
-}
-}
-
-
-void loop()
+void drawColorBox(void)
 {
- // picture loop
+  u8g_uint_t w,h;
+  u8g_uint_t r, g, b;
+  
+  w = u8g.getWidth()/32;
+  h = u8g.getHeight()/8;
+  for( b = 0; b < 4; b++ )
+    for( g = 0; g < 8; g++ )
+      for( r = 0; r < 8; r++ )
+      {
+        u8g.setColorIndex((r<<5) |  (g<<2) | b );
+        u8g.drawBox(g*w + b*w*8, r*h, w, h);
+      }
+}
+
+void drawLogo(uint8_t d)
+{
+#ifdef MINI_LOGO 
+    u8g.setFont(u8g_font_gdr17r);
+    u8g.drawStr(0+d, 22+d, "U");
+    u8g.setFont(u8g_font_gdr20n);
+    u8g.drawStr90(17+d,8+d,"8");
+    u8g.setFont(u8g_font_gdr17r);
+    u8g.drawStr(39+d,22+d,"g");
+    
+    u8g.drawHLine(2+d, 25+d, 34);
+    u8g.drawVLine(32+d, 22+d, 12);
+#else
+    u8g.setFont(u8g_font_gdr25r);
+    u8g.drawStr(0+d, 30+d, "U");
+    u8g.setFont(u8g_font_gdr30n);
+    u8g.drawStr90(23+d,10+d,"8");
+    u8g.setFont(u8g_font_gdr25r);
+    u8g.drawStr(53+d,30+d,"g");
+    
+    u8g.drawHLine(2+d, 35+d, 47);
+    u8g.drawVLine(45+d, 32+d, 12);
+#endif
+}
+
+void drawURL(void)
+{
+#ifndef MINI_LOGO  // #ifndef 는 조건처리를 위한 전처리문  if not define이라는 뜻 으로 ifdef의 반대
+  u8g.setFont(u8g_font_4x6);
+  if ( u8g.getHeight() < 59 )
+  {
+    u8g.drawStr(53,9,"code.google.com");
+    u8g.drawStr(77,18,"/p/u8glib");
+  }
+  else
+  {
+    u8g.drawStr(1,54,"code.google.com/p/u8glib");
+  }
+#endif
+}
+
+
+void draw(void) {
+  if ( u8g.getMode() == U8G_MODE_R3G3B2 ) {
+    drawColorBox();
+  }
+  u8g.setColorIndex(1);
+  if ( U8G_MODE_GET_BITS_PER_PIXEL(u8g.getMode()) > 1 ) {
+    drawLogo(2);
+    u8g.setColorIndex(2);
+    drawLogo(1);
+    u8g.setColorIndex(3);
+  }
+  drawLogo(0);
+  drawURL();
+  
+}
+
+void setup(void) {
+  // flip screen, if required
+  //u8g.setRot180();
+}
+
+void loop(void) {
+  
+  // picture loop
   u8g.firstPage();  
   do {
     draw();
+  u8g.setColorIndex(1);
   } while( u8g.nextPage() );
   
   // rebuild the picture after some delay
-  //delay(50);   
-
+  delay(200);  
 }
 
