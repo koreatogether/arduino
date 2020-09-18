@@ -1,10 +1,7 @@
 .vscode/c_cpp_properties.json
 .vscode\arduino.json
-<<<<<<< HEAD
-=======
 build/sketch/lcdsensorstest.ino.cpp.o
 build/build.options.json
->>>>>>> gassensor
 build/lcdsensorstest.ino.eep
 build/lcdsensorstest.ino.elf
 build/lcdsensorstest.ino.hex

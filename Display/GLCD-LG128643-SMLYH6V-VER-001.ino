@@ -52,26 +52,27 @@ VER-001은 U8glib 예제를 통해서 공부하고자 임의 이름을 붙인겁
 
 U8GLIB_KS0108_128 u8g(8, 9, 10, 11, 4, 5, 6, 7, 18, 14, 15, 17, 16); 		// 8Bit Com: D0..D7: 8,9,10,11,4,5,6,7 en=18, cs1=14, cs2=15,di=17,rw=16
 
+int limit_switch = digitalRead(2);   // 리미트 스위치 d2에 물림 
 
 void drawColorBox(void)
 {
   u8g_uint_t w,h;
   u8g_uint_t r, g, b;
   
-  w = u8g.getWidth()/32;
-  h = u8g.getHeight()/8;
+  w = u8g.getWidth()/32;  // 디스플레이 폭값을 32로 나눈다.
+  h = u8g.getHeight()/8;  // 디스플레이 높이값을 8로 나눈다.
   for( b = 0; b < 4; b++ )
     for( g = 0; g < 8; g++ )
       for( r = 0; r < 8; r++ )
       {
-        u8g.setColorIndex((r<<5) |  (g<<2) | b );
+        u8g.setColorIndex((r<<5) |  (g<<2) | b ); // 이건 논리인데 잘 모르겠음 
         u8g.drawBox(g*w + b*w*8, r*h, w, h);
       }
 }
 
 void drawLogo(uint8_t d)
 {
-#ifdef MINI_LOGO 
+#ifdef MINI_LOGO // 왜 상단이 안되고 하단이 출력이 되는걸까
     u8g.setFont(u8g_font_gdr17r);
     u8g.drawStr(0+d, 22+d, "U");
     u8g.setFont(u8g_font_gdr20n);
@@ -79,7 +80,7 @@ void drawLogo(uint8_t d)
     u8g.setFont(u8g_font_gdr17r);
     u8g.drawStr(39+d,22+d,"g");
     
-    u8g.drawHLine(2+d, 25+d, 34);
+    u8g.drawHLine(2+d, 25+d,34);
     u8g.drawVLine(32+d, 22+d, 12);
 #else
     u8g.setFont(u8g_font_gdr25r);
@@ -129,7 +130,9 @@ void draw(void) {
 
 void setup(void) {
   // flip screen, if required
-  //u8g.setRot180();
+  //u8g.setRot180();  
+  Serial.begin(9600);
+  pinMode(2 , INPUT);
 }
 
 void loop(void) {
@@ -143,5 +146,8 @@ void loop(void) {
   
   // rebuild the picture after some delay
   delay(200);  
+
+  
+  Serial.println(digitalRead(2));
 }
 
