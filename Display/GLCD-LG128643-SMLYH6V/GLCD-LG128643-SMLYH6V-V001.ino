@@ -3,7 +3,8 @@
 2. 국내 사이트 등에서 설명하는 몇가지 자료는 보통 GLCD중에 다른 칩셋을 이용하는 제품을 설명하므로 무조건 DataSheet를 보고 연결 할것 ! 
 3. GLCD와 아두이노 우노 핀 연결은  U8glib 의 드라이버 설정 대로 핀을 연결할것 
     * U8glib 드라이버 초기 설정 = 8Bit Com: D0..D7: 8,9,10,11,4,5,6,7 en=18, cs1=14, cs2=15,di=17,rw=16 라고 되어있는데 이대로 하면됨 
-    
+
+4. < 배선 설명 >    
 1:  Vss = GND
 2:  Vdd = +5V -  총 2핀이 5V 핀에 연결되어야 하기에 브레드 보드로 연결할것
 3:  Vo  = LCD 볼트 운용을 위한 핀으로 데이타 시트보면 POWER supply 표에 나오는 대로 뽑으면 된다. 아래 그림 참조 
@@ -43,16 +44,24 @@
 
 유튜브 다른핀 연결  영상 https://youtu.be/BulAOfyVnLs
 
-VER-001은 U8glib 예제를 통해서 공부하고자 임의 이름을 붙인겁니다.
-원본 예제 U8gLogo
+5. < 시도 1 - 화면 구성 >
+glcd +  리미트 스위치 1 + 리미트 스위치 2번을 이용해서 다음과 같이 화면 구성을 해보고자 합니다.
+
+화면 1 :  로고 화면 7초간 노출 및 끝 
+화면 2 ~ 5 :  리미트 스위치 1번 , 2번의 상태상태에 따른 출력 
+
+6.  ver 001 - 총평
+    아래의 코드로 실행할시 의도대로 동작을 했으며 , 화면  2 ~ 5번 사이의 전환에는 충분한 화면 전환을 해주어서 마무리 됨 
+    ver 002 는 딜레이 함수 를 millis() 함수로 표현하는 것을 목표로 함
+    glcd핀을 줄여줄수있는  방법은 없나 ??
+
+
 */
 
 #include <U8glib.h>
 
 
 U8GLIB_KS0108_128 u8g(8, 9, 10, 11, 4, 5, 6, 7, 18, 14, 15, 17, 16); 		// 8Bit Com: D0..D7: 8,9,10,11,4,5,6,7 en=18, cs1=14, cs2=15,di=17,rw=16
-
-int limit_switch = digitalRead(2);   // 리미트 스위치 d2에 물림 
 
 void drawColorBox(void)
 {
@@ -128,26 +137,67 @@ void draw(void) {
   
 }
 
+void ifdraw(void){
+    u8g.setFont(u8g_font_ncenB08);
+  if (digitalRead(2) == 0 && digitalRead(3) == 0 ){
+
+  u8g.drawStr( 5 , 10 , "Door1 is close");
+  u8g.drawStr( 5 , 30 , "Door2 is close");
+  u8g.drawStr( 5 , 55 , "ALL Is Good!!");
+  }
+ 
+    if(digitalRead(2) == 1 && digitalRead(3) == 0){
+      u8g.drawStr( 5 , 10 , "Door1 is OPEN!!~");
+      u8g.drawHLine( 55 , 18 , 40);
+      u8g.drawStr( 5 , 30 , "Door2 is close");
+      u8g.drawStr( 5 , 55 , "Check Door1 Please");
+    }
+    
+   
+    
+        if(digitalRead(2) == 0 && digitalRead(3) == 1){
+          u8g.drawStr( 5 , 10 , "Door1 is close");
+          u8g.drawStr( 5 , 30 , "Door2 is OPEN!!~");
+          u8g.drawStr( 5 , 55 , "Check Door2 Please");
+        }          
+        
+            if(digitalRead(2) == 1 && digitalRead(3) == 1){
+              u8g.drawStr( 5 , 10 , "Door1 , 2 is OPEN!!~");              
+              u8g.drawStr( 5 , 30 , "EMERGENCY !!!");
+              u8g.drawStr( 5 , 50 , "Check Door !!");
+              u8g.drawStr( 5 , 60 , "Hurry Up!!!!!!");
+            }
+}
+
 void setup(void) {
   // flip screen, if required
   //u8g.setRot180();  
   Serial.begin(9600);
   pinMode(2 , INPUT);
+  pinMode(3 , INPUT);
+  u8g.firstPage();  
+  do {
+    draw();    
+  u8g.setColorIndex(1);
+  }
+  while( u8g.nextPage() );
+  delay(2000);
 }
 
 void loop(void) {
   
   // picture loop
-  u8g.firstPage();  
-  do {
-    draw();
-  u8g.setColorIndex(1);
-  } while( u8g.nextPage() );
   
-  // rebuild the picture after some delay
-  delay(200);  
+    // rebuild the picture after some delay
+  
 
-  
+  u8g.firstPage();
+  do{
+  ifdraw();
+  }while ( u8g.nextPage() );
+
+
   Serial.println(digitalRead(2));
+  Serial.println(digitalRead(3));
 }
 
