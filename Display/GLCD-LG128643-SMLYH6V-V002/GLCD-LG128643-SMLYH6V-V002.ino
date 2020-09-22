@@ -54,7 +54,23 @@
     아래의 코드로 실행할시 의도대로 동작을 했으며 , 화면  2 ~ 5번 사이의 전환에는 충분한 화면 전환을 해주어서 마무리 됨 
     
 6. <V002 - 화면 구성>
-    미니 PUSH BUTTON3개를 추가하고 이를 통해서 메뉴를 전환 하고 각 메뉴에 delay를 없애고 다른 함수로 시간차를 두는 것을 목표로 하고자 합니다. 
+    미니 PUSH BUTTON2개를 추가하고 이를 통해서 메뉴를 전환 하고 각 메뉴에 delay를 없애고 다른 함수로 시간차를 두는 것을 목표로 하고자 합니다. 
+
+6-1. TACK SWITCH (TACK BUTTON)의 경우 풀업(PULLUP)저항상태를 이용해서 하는걸 추천. 풀다운은 가끔 값이 튑니다. (노이즈에 약하다는게 이걸 뜻하는것같음)
+    5V --> 저항 10K -------- 원하는 입력핀
+                       -
+                       -
+                       o*
+                          **
+                             **
+                       o
+                       -
+                       - 
+                      GND
+
+6-2. Tack Switch 값 1, 0 의 중에 0이 눌렀음을 뜻하므로 이값을 누적시켜서 메뉴를 이동 시키고 마지막 위치에 오면 값을 초기화 해서 다시 사용할수있게 하는걸 시도 해볼겁니다.
+    예> 택 1번 누름 -> 0 값이 1번 누적 1번 화면 뜸, 택 2번 누름 -> 0 값이 2번 누적 2번 화면 뜸, 택 3번 누름 -> 0 누적값을 초기화 , 3번 화면 뜸 이걸 루프시킴 
+
 
     
 */
@@ -62,7 +78,59 @@
 #include <U8glib.h>
 
 
-U8GLIB_KS0108_128 u8g(8, 9, 10, 11, 4, 5, 6, 7, 18, 14, 15, 17, 16); 		// 8Bit Com: D0..D7: 8,9,10,11,4,5,6,7 en=18, cs1=14, cs2=15,di=17,rw=16
+U8GLIB_KS0108_128 u8g(8, 9, 10, 11, 4, 5, 6, 7, 18, 14, 15, 17, 16);     // 8Bit Com: D0..D7: 8,9,10,11,4,5,6,7 en=18, cs1=14, cs2=15,di=17,rw=16
+
+boolean stateSreen = false;   // 전기레벨로 보면 +0V , 스위치는 떨어진 상태를 의미함 
+
+void setup(void) {
+  // flip screen, if required
+  //u8g.setRot180();  
+  Serial.begin(9600);
+  pinMode(2 , INPUT);
+  pinMode(3 , INPUT);
+  pinMode(12 , INPUT_PULLUP);
+  pinMode(13 , INPUT_PULLUP);
+  pinMode(A0 , INPUT_PULLUP);
+  u8g.firstPage();  
+  do {
+    draw();    
+  u8g.setColorIndex(1);
+  }
+  while( u8g.nextPage() );
+  delay(2000);
+}
+
+
+void loop(void) {
+  
+  // picture loop
+  
+    // rebuild the picture after some delay
+        u8g.firstPage(); // 화면 1 , 리미트 센서 2개를 이용하여 출력 화면         
+        do{               
+          Serial.println("ifdraw");
+        ifdraw();          
+          }while ( u8g.nextPage() );    
+        delay(1000);
+        u8g.firstPage(); // 화면 1 , 리미트 센서 2개를 이용하여 출력 화면 
+        do{
+          Serial.println("tackswitch_oneScreen");
+        tackswitch_oneScreen();
+          }while ( u8g.nextPage());  
+          delay(1000);
+    
+
+    Serial.println(digitalRead(12));
+    Serial.println(digitalRead(13));
+
+  /*//Serial.println(digitalRead(2));  //// 스위치별 입력값이 0 , 1 을 정확한지 체크하는 문장 
+  //Serial.println(digitalRead(3));
+  
+  //Serial.println(digitalRead(14));  
+  */ 
+}
+
+
 
 void drawColorBox(void)
 {
@@ -138,7 +206,7 @@ void draw(void) {
   
 }
 
-void ifdraw(void){
+void ifdraw(void){  // 리미트 센서를 이용한 화면 구성  , 명칭은 화면 <1>
     u8g.setFont(u8g_font_ncenB08);
   if (digitalRead(2) == 0 && digitalRead(3) == 0 ){
 
@@ -170,35 +238,14 @@ void ifdraw(void){
             }
 }
 
-void setup(void) {
-  // flip screen, if required
-  //u8g.setRot180();  
-  Serial.begin(9600);
-  pinMode(2 , INPUT);
-  pinMode(3 , INPUT);
-  u8g.firstPage();  
-  do {
-    draw();    
-  u8g.setColorIndex(1);
-  }
-  while( u8g.nextPage() );
-  delay(2000);
+void tackswitch_oneScreen(void)
+{
+    
+        u8g.drawStr(5 , 10 ,"tackswitch_one");        
+        u8g.drawStr(5 , 25 ,"tackswitch_one");        
 }
 
-void loop(void) {
-  
-  // picture loop
-  
-    // rebuild the picture after some delay
-  
-
-  u8g.firstPage();
-  do{
-  ifdraw();
-  }while ( u8g.nextPage() );
-
-
-  Serial.println(digitalRead(2));
-  Serial.println(digitalRead(3));
+void tackswitch_twoScreen(void)
+{
+    ;
 }
-

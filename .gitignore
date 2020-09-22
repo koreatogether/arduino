@@ -343,3 +343,11 @@ build/GLCD-LG128643-SMLYH6V-VER-001.ino.with_bootloader.hex
 build/sketch/GLCD-LG128643-SMLYH6V-VER-001.ino.cpp
 build/sketch/GLCD-LG128643-SMLYH6V-VER-001.ino.cpp.d
 build/sketch/GLCD-LG128643-SMLYH6V-VER-001.ino.cpp.o
+build/sketch/GLCD-LG128643-SMLYH6V-V002.ino.cpp.o
+build/GLCD-LG128643-SMLYH6V-V002.ino.eep
+build/GLCD-LG128643-SMLYH6V-V002.ino.elf
+build/GLCD-LG128643-SMLYH6V-V002.ino.hex
+build/GLCD-LG128643-SMLYH6V-V002.ino.with_bootloader.bin
+build/GLCD-LG128643-SMLYH6V-V002.ino.with_bootloader.hex
+build/sketch/GLCD-LG128643-SMLYH6V-V002.ino.cpp
+build/sketch/GLCD-LG128643-SMLYH6V-V002.ino.cpp.d
