@@ -351,3 +351,4 @@ build/GLCD-LG128643-SMLYH6V-V002.ino.with_bootloader.bin
 build/GLCD-LG128643-SMLYH6V-V002.ino.with_bootloader.hex
 build/sketch/GLCD-LG128643-SMLYH6V-V002.ino.cpp
 build/sketch/GLCD-LG128643-SMLYH6V-V002.ino.cpp.d
+Display/Display_AVR_UNO_atmega328p.hex

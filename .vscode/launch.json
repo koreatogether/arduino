@@ -4,6 +4,74 @@
     // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
     "version": "0.2.0",
     "configurations": [
+    {
+        "name": "Arduino",
+        "type": "arduino",
+        "request": "launch",
+        "program": "${file}",
+        "cwd": "${workspaceFolder}",
+        "MIMode": "gdb",
+        "targetArchitecture": "arm",
+        "miDebuggerPath": "",
+        "debugServerPath": "",
+        "debugServerArgs": "",
+        "customLaunchSetupCommands": [
+            {
+                "text": "target remote localhost:3333"
+            },
+            {
+                "text": "file \"${file}\""
+            },
+            {
+                "text": "load"
+            },
+            {
+                "text": "monitor reset halt"
+            },
+            {
+                "text": "monitor reset init"
+            }
+        ],
+        "stopAtEntry": true,
+        "serverStarted": "Info\\ :\\ [\\w\\d\\.]*:\\ hardware",
+        "launchCompleteCommand": "exec-continue",
+        "filterStderr": true,
+        "args": []
+    },
+    {
+        "name": "Arduino",
+        "type": "arduino",
+        "request": "launch",
+        "program": "${file}",
+        "cwd": "${workspaceFolder}",
+        "MIMode": "gdb",
+        "targetArchitecture": "arm",
+        "miDebuggerPath": "",
+        "debugServerPath": "",
+        "debugServerArgs": "",
+        "customLaunchSetupCommands": [
+            {
+                "text": "target remote localhost:3333"
+            },
+            {
+                "text": "file \"${file}\""
+            },
+            {
+                "text": "load"
+            },
+            {
+                "text": "monitor reset halt"
+            },
+            {
+                "text": "monitor reset init"
+            }
+        ],
+        "stopAtEntry": true,
+        "serverStarted": "Info\\ :\\ [\\w\\d\\.]*:\\ hardware",
+        "launchCompleteCommand": "exec-continue",
+        "filterStderr": true,
+        "args": []
+    },
         {
             "name": "Arduino",
             "type": "arduino",

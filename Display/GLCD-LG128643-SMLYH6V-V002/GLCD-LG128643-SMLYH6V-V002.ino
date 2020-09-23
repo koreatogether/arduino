@@ -77,125 +77,126 @@
 
 #include <U8glib.h>
 
+U8GLIB_KS0108_128 u8g(8, 9, 10, 11, 4, 5, 6, 7, 18, 14, 15, 17, 16); // 8Bit Com: D0..D7: 8,9,10,11,4,5,6,7 en=18, cs1=14, cs2=15,di=17,rw=16
 
-U8GLIB_KS0108_128 u8g(8, 9, 10, 11, 4, 5, 6, 7, 18, 14, 15, 17, 16);     // 8Bit Com: D0..D7: 8,9,10,11,4,5,6,7 en=18, cs1=14, cs2=15,di=17,rw=16
+boolean stateSreen = false; // 전기레벨로 보면 +0V , 스위치는 떨어진 상태를 의미함
 
-boolean stateSreen = false;   // 전기레벨로 보면 +0V , 스위치는 떨어진 상태를 의미함 
-
-void setup(void) {
+void setup(void)
+{
   // flip screen, if required
-  //u8g.setRot180();  
+  //u8g.setRot180();
   Serial.begin(9600);
-  pinMode(2 , INPUT);
-  pinMode(3 , INPUT);
-  pinMode(12 , INPUT_PULLUP);
-  pinMode(13 , INPUT_PULLUP);
-  pinMode(A0 , INPUT_PULLUP);
-  u8g.firstPage();  
-  do {
-    draw();    
-  u8g.setColorIndex(1);
-  }
-  while( u8g.nextPage() );
+  pinMode(2, INPUT);
+  pinMode(3, INPUT);
+  pinMode(12, INPUT_PULLUP);
+  pinMode(13, INPUT_PULLUP);
+  pinMode(A0, INPUT_PULLUP);
+  u8g.firstPage();
+  do
+  {
+    draw();
+    u8g.setColorIndex(1);
+  } while (u8g.nextPage());
   delay(2000);
 }
 
+void loop(void)
+{
 
-void loop(void) {
-  
   // picture loop
-  
-    // rebuild the picture after some delay
-        u8g.firstPage(); // 화면 1 , 리미트 센서 2개를 이용하여 출력 화면         
-        do{               
-          Serial.println("ifdraw");
-        ifdraw();          
-          }while ( u8g.nextPage() );    
-        delay(1000);
-        u8g.firstPage(); // 화면 1 , 리미트 센서 2개를 이용하여 출력 화면 
-        do{
-          Serial.println("tackswitch_oneScreen");
-        tackswitch_oneScreen();
-          }while ( u8g.nextPage());  
-          delay(1000);
-    
 
-    Serial.println(digitalRead(12));
-    Serial.println(digitalRead(13));
+  // rebuild the picture after some delay
+  u8g.firstPage(); // 화면 1 , 리미트 센서 2개를 이용하여 출력 화면
+  do
+  {
+    Serial.println("ifdraw");
+    ifdraw();
+  } while (u8g.nextPage());
+  delay(1000);
+  u8g.firstPage(); // 화면 1 , 리미트 센서 2개를 이용하여 출력 화면
+  do
+  {
+    Serial.println("tackswitch_oneScreen");
+    tackswitch_oneScreen();
+  } while (u8g.nextPage());
+  delay(1000);
+
+  Serial.println(digitalRead(12));
+  Serial.println(digitalRead(13));
 
   /*//Serial.println(digitalRead(2));  //// 스위치별 입력값이 0 , 1 을 정확한지 체크하는 문장 
   //Serial.println(digitalRead(3));
   
   //Serial.println(digitalRead(14));  
-  */ 
+  */
 }
-
-
 
 void drawColorBox(void)
 {
-  u8g_uint_t w,h;
+  u8g_uint_t w, h;
   u8g_uint_t r, g, b;
-  
-  w = u8g.getWidth()/32;  // 디스플레이 폭값을 32로 나눈다.
-  h = u8g.getHeight()/8;  // 디스플레이 높이값을 8로 나눈다.
-  for( b = 0; b < 4; b++ )
-    for( g = 0; g < 8; g++ )
-      for( r = 0; r < 8; r++ )
+
+  w = u8g.getWidth() / 32; // 디스플레이 폭값을 32로 나눈다.
+  h = u8g.getHeight() / 8; // 디스플레이 높이값을 8로 나눈다.
+  for (b = 0; b < 4; b++)
+    for (g = 0; g < 8; g++)
+      for (r = 0; r < 8; r++)
       {
-        u8g.setColorIndex((r<<5) |  (g<<2) | b ); // 이건 논리인데 잘 모르겠음 
-        u8g.drawBox(g*w + b*w*8, r*h, w, h);
+        u8g.setColorIndex((r << 5) | (g << 2) | b); // 이건 논리인데 잘 모르겠음
+        u8g.drawBox(g * w + b * w * 8, r * h, w, h);
       }
 }
 
 void drawLogo(uint8_t d)
 {
 #ifdef MINI_LOGO // 왜 상단이 안되고 하단이 출력이 되는걸까
-    u8g.setFont(u8g_font_gdr17r);
-    u8g.drawStr(0+d, 22+d, "U");
-    u8g.setFont(u8g_font_gdr20n);
-    u8g.drawStr90(17+d,8+d,"8");
-    u8g.setFont(u8g_font_gdr17r);
-    u8g.drawStr(39+d,22+d,"g");
-    
-    u8g.drawHLine(2+d, 25+d,34);
-    u8g.drawVLine(32+d, 22+d, 12);
+  u8g.setFont(u8g_font_gdr17r);
+  u8g.drawStr(0 + d, 22 + d, "U");
+  u8g.setFont(u8g_font_gdr20n);
+  u8g.drawStr90(17 + d, 8 + d, "8");
+  u8g.setFont(u8g_font_gdr17r);
+  u8g.drawStr(39 + d, 22 + d, "g");
+
+  u8g.drawHLine(2 + d, 25 + d, 34);
+  u8g.drawVLine(32 + d, 22 + d, 12);
 #else
-    u8g.setFont(u8g_font_gdr25r);
-    u8g.drawStr(0+d, 30+d, "U");
-    u8g.setFont(u8g_font_gdr30n);
-    u8g.drawStr90(23+d,10+d,"8");
-    u8g.setFont(u8g_font_gdr25r);
-    u8g.drawStr(53+d,30+d,"g");
-    
-    u8g.drawHLine(2+d, 35+d, 47);
-    u8g.drawVLine(45+d, 32+d, 12);
+  u8g.setFont(u8g_font_gdr25r);
+  u8g.drawStr(0 + d, 30 + d, "U");
+  u8g.setFont(u8g_font_gdr30n);
+  u8g.drawStr90(23 + d, 10 + d, "8");
+  u8g.setFont(u8g_font_gdr25r);
+  u8g.drawStr(53 + d, 30 + d, "g");
+
+  u8g.drawHLine(2 + d, 35 + d, 47);
+  u8g.drawVLine(45 + d, 32 + d, 12);
 #endif
 }
 
 void drawURL(void)
 {
-#ifndef MINI_LOGO  // #ifndef 는 조건처리를 위한 전처리문  if not define이라는 뜻 으로 ifdef의 반대
+#ifndef MINI_LOGO // #ifndef 는 조건처리를 위한 전처리문  if not define이라는 뜻 으로 ifdef의 반대
   u8g.setFont(u8g_font_4x6);
-  if ( u8g.getHeight() < 59 )
+  if (u8g.getHeight() < 59)
   {
-    u8g.drawStr(53,9,"code.google.com");
-    u8g.drawStr(77,18,"/p/u8glib");
+    u8g.drawStr(53, 9, "code.google.com");
+    u8g.drawStr(77, 18, "/p/u8glib");
   }
   else
   {
-    u8g.drawStr(1,54,"code.google.com/p/u8glib");
+    u8g.drawStr(1, 54, "code.google.com/p/u8glib");
   }
 #endif
 }
 
-
-void draw(void) {
-  if ( u8g.getMode() == U8G_MODE_R3G3B2 ) {
+void draw(void)
+{
+  if (u8g.getMode() == U8G_MODE_R3G3B2)
+  {
     drawColorBox();
   }
   u8g.setColorIndex(1);
-  if ( U8G_MODE_GET_BITS_PER_PIXEL(u8g.getMode()) > 1 ) {
+  if (U8G_MODE_GET_BITS_PER_PIXEL(u8g.getMode()) > 1)
+  {
     drawLogo(2);
     u8g.setColorIndex(2);
     drawLogo(1);
@@ -203,49 +204,51 @@ void draw(void) {
   }
   drawLogo(0);
   drawURL();
-  
 }
 
-void ifdraw(void){  // 리미트 센서를 이용한 화면 구성  , 명칭은 화면 <1>
-    u8g.setFont(u8g_font_ncenB08);
-  if (digitalRead(2) == 0 && digitalRead(3) == 0 ){
+void ifdraw(void)
+{ // 리미트 센서를 이용한 화면 구성  , 명칭은 화면 <1>
+  u8g.setFont(u8g_font_ncenB08);
+  if (digitalRead(2) == 0 && digitalRead(3) == 0)
+  {
 
-  u8g.drawStr( 5 , 10 , "Door1 is close");
-  u8g.drawStr( 5 , 30 , "Door2 is close");
-  u8g.drawStr( 5 , 55 , "ALL Is Good!!");
+    u8g.drawStr(5, 10, "Door1 is close");
+    u8g.drawStr(5, 30, "Door2 is close");
+    u8g.drawStr(5, 55, "ALL Is Good!!");
   }
- 
-    if(digitalRead(2) == 1 && digitalRead(3) == 0){
-      u8g.drawStr( 5 , 10 , "Door1 is OPEN!!~");
-      u8g.drawHLine( 55 , 18 , 40);
-      u8g.drawStr( 5 , 30 , "Door2 is close");
-      u8g.drawStr( 5 , 55 , "Check Door1 Please");
-    }
-    
-   
-    
-        if(digitalRead(2) == 0 && digitalRead(3) == 1){
-          u8g.drawStr( 5 , 10 , "Door1 is close");
-          u8g.drawStr( 5 , 30 , "Door2 is OPEN!!~");
-          u8g.drawStr( 5 , 55 , "Check Door2 Please");
-        }          
-        
-            if(digitalRead(2) == 1 && digitalRead(3) == 1){
-              u8g.drawStr( 5 , 10 , "Door1 , 2 is OPEN!!~");              
-              u8g.drawStr( 5 , 30 , "EMERGENCY !!!");
-              u8g.drawStr( 5 , 50 , "Check Door !!");
-              u8g.drawStr( 5 , 60 , "Hurry Up!!!!!!");
-            }
+
+  if (digitalRead(2) == 1 && digitalRead(3) == 0)
+  {
+    u8g.drawStr(5, 10, "Door1 is OPEN!!~");
+    u8g.drawHLine(55, 18, 40);
+    u8g.drawStr(5, 30, "Door2 is close");
+    u8g.drawStr(5, 55, "Check Door1 Please");
+  }
+
+  if (digitalRead(2) == 0 && digitalRead(3) == 1)
+  {
+    u8g.drawStr(5, 10, "Door1 is close");
+    u8g.drawStr(5, 30, "Door2 is OPEN!!~");
+    u8g.drawStr(5, 55, "Check Door2 Please");
+  }
+
+  if (digitalRead(2) == 1 && digitalRead(3) == 1)
+  {
+    u8g.drawStr(5, 10, "Door1 , 2 is OPEN!!~");
+    u8g.drawStr(5, 30, "EMERGENCY !!!");
+    u8g.drawStr(5, 50, "Check Door !!");
+    u8g.drawStr(5, 60, "Hurry Up!!!!!!");
+  }
 }
 
 void tackswitch_oneScreen(void)
 {
-    
-        u8g.drawStr(5 , 10 ,"tackswitch_one");        
-        u8g.drawStr(5 , 25 ,"tackswitch_one");        
+
+  u8g.drawStr(5, 10, "tackswitch_one");
+  u8g.drawStr(5, 25, "tackswitch_one");
 }
 
 void tackswitch_twoScreen(void)
 {
-    ;
+  ;
 }
