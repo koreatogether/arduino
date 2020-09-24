@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:uno",
     "port": "COM5",
-    "sketch": "\\Display\\GLCD-LG128643-SMLYH6V-V002\\GLCD-LG128643-SMLYH6V-V002.ino",
+    "sketch": "\\Display\\GLCD-LG128643-SMLYH6V-V002\\GLCD-LG128643-SMLYH6V-V002-001.ino",
     "output": ".\\build"
 }
