@@ -71,7 +71,9 @@
 6-2. Tack Switch 값 1, 0 의 중에 0이 눌렀음을 뜻하므로 이값을 누적시켜서 메뉴를 이동 시키고 마지막 위치에 오면 값을 초기화 해서 다시 사용할수있게 하는걸 시도 해볼겁니다.
     예> 택 1번 누름 -> 0 값이 1번 누적 1번 화면 뜸, 택 2번 누름 -> 0 값이 2번 누적 2번 화면 뜸, 택 3번 누름 -> 0 누적값을 초기화 , 3번 화면 뜸 이걸 루프시킴 
 
-6-3. if + do / while + do / while 문을 통한 메뉴 구성 -  12번 스위치 누르면 ifdraw2 번 내부 루프 유지 / 13번 누르면 ifdraw3 내부 루프 유지 
+6-3. if + do / while + do / while 문을 통한 메뉴 구성 -  12번 스위치 누르면 ifdraw2 번 내부 루프 유지 / 13번 누르면 ifdraw3 내부 루프 유지 - 실패함
+
+6-4. 인터넷에 돌던 https://www.youtube.com/watch?v=DuAG98P9Seo 영상의 소스를 가지고 시도  , 결과 실패함
 
     
 */
@@ -80,8 +82,10 @@
 
 U8GLIB_KS0108_128 u8g(8, 9, 10, 11, 4, 5, 6, 7, 18, 14, 15, 17, 16); // 8Bit Com: D0..D7: 8,9,10,11,4,5,6,7 en=18, cs1=14, cs2=15,di=17,rw=16
 
-boolean stateSreen = false; // 전기레벨로 보면 +0V , 스위치는 떨어진 상태를 의미함
-
+int upButton = 12;
+int downButton = 13;
+int menu = 1;
+/////////////////////////////////////////////////////
 void setup(void)
 {
   // flip screen, if required
@@ -89,10 +93,10 @@ void setup(void)
   Serial.begin(9600);
   pinMode(2, INPUT);
   pinMode(3, INPUT);
-  pinMode(12, INPUT_PULLUP);
-  pinMode(13, INPUT_PULLUP);
-  pinMode(A0, INPUT_PULLUP);
-  u8g.firstPage();
+  pinMode(upButton, INPUT_PULLUP);
+  pinMode(downButton, INPUT_PULLUP);
+
+  u8g.firstPage();  // 로고 화면 
   do
   {
     draw();
@@ -100,36 +104,72 @@ void setup(void)
   } while (u8g.nextPage());
   delay(2000);
 }
-
+////////////////////////////////////////////////////
 void loop(void)
 {  
 
+  if(!digitalRead(downButton))
+  {
+    Serial.println(" clicked down button");
+    menu ++;    
+    updateMenu();   
+    while(!digitalRead(downButton));
+  }
+
+  if(!digitalRead(upButton))
+  {
+    Serial.println(" clicked up button");
+    menu --;    
+    updateMenu();
+    while(!digitalRead(upButton));
+  }
+}
+///////////////////////////////////////////////////
+  void updateMenu()
+  {
+    switch (menu){
+      case 0:
+      menu = 1;      
+      break;
+
+      case 1:
+      // 로고 화면 제외 1번 화면 에 넣을 draw 함수 넣을 것 
+      Serial.println(" in case 1");
+      u8g.firstPage();
+      do{
+      ifdraw1();
+      Serial.println(" in case 1 ~~~~~~");
+    } while ( u8g.nextPage() );
+      break;
+
+      case 2:
+      // 로고 화면 제외 2번 화면에 넣을 draw 함수 넣을 것 
+      Serial.println(" in case 2");
+      for( int i = 1000 ; i <= 1 ; i --)
+      {
+      u8g.firstPage();
+      do{
+        Serial.println(" in case 2 ~~~~~");
+      ifdraw2();
+    } while ( u8g.nextPage() );      
+  } while(! digitalRead(upButton));
+      break;
+
+      /*
+      그 이상의 메뉴를 넣고 싶으면 위와 같이 case 를 + 하면된다. 
+      */
+
+      case 3:
+      menu = 2;
+      break;
 
 
+    }
   }
 
 
-  
-  /*u8g.firstPage(); 
-  do
-  {
-    Serial.println("tackswitch_oneScreen");
-    tackswitch_oneScreen();
-  } while (u8g.nextPage());
-  */
 
 
-  //Serial.println(digitalRead(12));
-  //Serial.println(digitalRead(13));
-
-  /*//Serial.println(digitalRead(2));  //// 스위치별 입력값이 0 , 1 을 정확한지 체크하는 문장 
-  //Serial.println(digitalRead(3));
-  
-  //Serial.println(digitalRead(14));  
-  */
-
-
-}
 
 void drawColorBox(void)
 {
@@ -208,7 +248,7 @@ void draw(void)
 
 
 
-void ifdraw(void)
+void ifdraw1(void)
   {
   u8g.setFont(u8g_font_ncenB08);
   u8g.drawStr(5, 10, "Door1 is close");
@@ -219,10 +259,36 @@ void ifdraw(void)
 
 void ifdraw2(void)
   {
-     u8g.drawStr(5, 10, "Door1 is OPEN!!~");
-    u8g.drawHLine(55, 18, 40);
-    u8g.drawStr(5, 30, "Door2 is close");
-    u8g.drawStr(5, 55, "Check Door1 Please");
+       if (digitalRead(2) == 0 && digitalRead(3) == 0)
+        {
+
+          u8g.drawStr(5, 10, "Door1 is close");
+          u8g.drawStr(5, 30, "Door2 is close");
+          u8g.drawStr(5, 55, "ALL Is Good!!");
+        }
+
+       if (digitalRead(2) == 1 && digitalRead(3) == 0)
+        {
+          u8g.drawStr(5, 10, "Door1 is OPEN!!~");
+          u8g.drawHLine(55, 18, 40);
+          u8g.drawStr(5, 30, "Door2 is close");
+          u8g.drawStr(5, 55, "Check Door1 Please");
+        }
+
+       if (digitalRead(2) == 0 && digitalRead(3) == 1)
+        {
+          u8g.drawStr(5, 10, "Door1 is close");
+          u8g.drawStr(5, 30, "Door2 is OPEN!!~");
+          u8g.drawStr(5, 55, "Check Door2 Please");
+        }
+
+       if (digitalRead(2) == 1 && digitalRead(3) == 1)
+        {
+          u8g.drawStr(5, 10, "Door1 , 2 is OPEN!!~");
+          u8g.drawStr(5, 30, "EMERGENCY !!!");
+          u8g.drawStr(5, 50, "Check Door !!");
+          u8g.drawStr(5, 60, "Hurry Up!!!!!!");
+        }
   }
 
 void ifdraw3(void)
