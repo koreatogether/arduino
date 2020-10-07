@@ -1,3 +1,5 @@
+//펌웨어 올린 후 at 명령어 체크할때 기본 코딩 
+
 #include <SoftwareSerial.h> 
 #define BT_RXD 2 
 #define BT_TXD 3 
