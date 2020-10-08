@@ -7,9 +7,6 @@
 
 공유기 SSID  와 접속  비밀번호 각각 3번씩 입력을 해야한다. 
 
-git test
-
-
 */
 #include <SoftwareSerial.h> 
 #define DEBUG true 
