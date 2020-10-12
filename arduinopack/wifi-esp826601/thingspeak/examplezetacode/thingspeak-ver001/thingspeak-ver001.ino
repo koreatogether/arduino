@@ -2,7 +2,13 @@
 본 코드는 https://m.blog.naver.com/PostView.nhn?blogId=zeta0807&logNo=221284584786&proxyReferer=http:%2F%2F203.233.19.155%2F
 의 글의 코드를 그대로 가져 왔음을 밝힘입니다.
 
+여러 코드를 둘러본결과 아래 코드는  AT COMMNAD를 사용해서 데이타를 업로드 
+하는 방식을 따르는 것 같다. 
 
+타 코드 같은 경우  ESPWIFI식의  추가 함수를 이용해서 코드를 짠것을 볼 수 있다. 
+
+아래 코드는 공유기에 보안 모드가 없을 경우 할수 있는 경우이다. 
+만약  WEP WAP 같은 암화화가 걸려 있다면 추가 코드가 필요하다 .
 
 */
 
@@ -80,12 +86,13 @@ void loop()
 	tmp36();
 
 	sendCommand("AT+CIPMUX=1",5,"OK");
+	
 	String getData1 = "GET /update?api_key="+ WApiKey +"&"+ tmp36Str +"="+String(tmp36temperatureC);
-
 	sendCommand("AT+CIPSTART=0,\"TCP\",\""+ HOST +"\","+ PORT,15,"OK");
 	sendCommand("AT+CIPSEND=0," +String(getData1.length()+4),4,">");
 	esp8266.println(getData1);delay(1500);countTrueCommand++;
 	sendCommand("AT+CIPCLOSE=0",5,"OK");
+	
 	//read soil sensor
 	/*soil = (float)(analogRead(SOIL)) / 1024  * 100;
 	//Serial.print("Soi sensor: ");
@@ -102,8 +109,8 @@ void loop()
 
 	//THINKSPEAK에 GET을 이용하여 올리고자 하는 값을 보내는 과정  AT COMMAND 이용 
 	sendCommand("AT+CIPMUX=1",5,"OK");
+	
 	String getData1 = "GET /update?api_key="+ WApiKey +"&"+ fieldSoil +"="+String(soil);
-
 	sendCommand("AT+CIPSTART=0,\"TCP\",\""+ HOST +"\","+ PORT,15,"OK");
 	sendCommand("AT+CIPSEND=0," +String(getData1.length()+4),4,">");
 	esp8266.println(getData1);delay(1500);countTrueCommand++;
