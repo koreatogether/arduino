@@ -42,8 +42,8 @@
   Copyright 2019, The MathWorks, Inc.
 */
 
-#include <ThingSpeak.h>
-#include <WiFiEsp.h>
+#include "ThingSpeak.h"
+#include "WiFiEsp.h"
 #include "secrets.h"
 
 char ssid[] = SECRET_SSID;   // your network SSID (name) 
@@ -53,8 +53,8 @@ WiFiEspClient  client;
 
 // Emulate Serial1 on pins 6/7 if not present
 //#ifndef HAVE_HWSERIAL1
-#include "SoftwareSerial.h"
-SoftwareSerial Serial1(6,7); // RX, TX
+//#include "SoftwareSerial.h"
+//SoftwareSerial Serial1(6, 7); // RX, TX
 //#define ESP_BAUDRATE  19200
 //#else
 #define ESP_BAUDRATE  115200
@@ -123,7 +123,7 @@ void loop() {
     Serial.println("Problem reading channel. HTTP error code " + String(statusCode)); 
   }
   
-  delay(25000); // No need to read the temperature too often.
+  delay(15000); // No need to read the temperature too often.
 
   // Read in field 1 of the private channel which is a counter  
   long count = ThingSpeak.readLongField(counterChannelNumber, counterFieldNumber, myCounterReadAPIKey);  
@@ -137,7 +137,7 @@ void loop() {
     Serial.println("Problem reading channel. HTTP error code " + String(statusCode)); 
   }
   
-  delay(25000); // No need to read the counter too often.
+  delay(15000); // No need to read the counter too often.
   
 }
 
