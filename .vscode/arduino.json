@@ -1,6 +1,6 @@
 {
     "board": "arduino:avr:uno",
-    "port": "COM7",
-    "sketch": "\\Display\\GLCD-LG128643-SMLYH6V-V002\\GLCD-LG128643-SMLYH6V-V002-001.ino",
+    "port": "COM10",
+    "sketch": "\\arduinopack\\wifi-esp826601\\thingspeak\\examplezetacode\\thingspeak-ver001\\TOTALRead\\TOTALRead1019.INO\\TOTALRead1019.INO.ino",
     "output": ".\\build"
 }

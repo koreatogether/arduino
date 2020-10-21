@@ -1,10 +1,11 @@
-/*센서 순서는 
- * DHT 22
- * BCHTS4085
- * TMP36
- * 미세먼지센서 A003  - 코드 출처는 : https://kwonkyo.tistory.com/130 입니다.
- * 미세먼지센서 GY ~
- * 조도 센서 TEMT6000
+/*  갖고 있는 센서를 아두이노 우노에 무리안가는 선에서 최대한 합해놨습니다.. 목록은  아래 순서이고 결과는 만족이네요 .
+ * 센서 순서는 
+ * DHT 22   테스트  ok     , 5V , 신호선 -> 아두이노 D8에 연결
+ * BCHTS4085   테스트  ok  , 3.3V , SCL -> A5 , SDA -> A4  , INT -> D7 (연결용도 모름 )
+ * TMP36  테스트  실패 ( 결과값이 안 맞음 )       ,  3.3V  , Vout -> A0
+ * 미세먼지센서 A003  - 코드 출처는 : https://kwonkyo.tistory.com/130 입니다.   테스트 ok  ,  5V ,   RX -> D6 , TX -> D5
+ * 미세먼지센서 GY ~  , 전류 한계치를 넘을까봐 테스트 제외 
+ * 조도 센서 TEMT6000 ,  테스트  OK , http://www.jkelec.co.kr/img/sensors/se1/TEMT6000/TEMT6000_manual.html ,  5V ,  OUT -> A1  , 아날로그 신호 읽어서 바로 출력하는 것.
  * 
  */
 
@@ -15,7 +16,7 @@
 #include <Wire.h>   // I2C 통신을 위한 아두이노 함수 
 #include <dht.h>    // dht 계열 센서중에 11 과 22를 지원하느 라이브러리
 #include <BCHTS4085.h>  // BCHTS4085 센서 회사에서 제공해주는 라이브러리
-#include <PMS.h>    // 미세먼지센서 PMS 시리즈에 대한 라이브러리 
+#include <PMS.h>    // 미세먼지센서 PMS계열 시리즈에 대한 라이브러리 < 여기선 PMSA003>
 #include <SoftwareSerial.h>  // 소프트시리얼 라이브러리 
 
 unsigned long totaltimenow = 0;
@@ -69,8 +70,15 @@ unsigned long timernow2 = 0;
 
 bool pms_power = false;
 int cycles = 0;
+//@@@@@@@@@@@@@ PMSA003 미세먼지센서 관련 끝 @@@@@@@@@@@@@@
 
-//=========================================================================
+//^^^^^^^^^^^^^ 조도센서  TEMT6000 관련 시작 ^^^^^^^^^^^^^^^^
+#define LIGHTPIN A1
+float readA1 ;
+//^^^^^^^^^^^^^ 조도센서  TEMT6000 관련 끝 ^^^^^^^^^^^^^^^^
+
+
+
 void setup() 
 {
   Serial.begin (9600);  // 시리얼 통신은 9600부터 테스트 
@@ -86,24 +94,31 @@ void setup()
   myserial.begin(9600);  // PMSA003 소프트시리얼 통신 속도 
   pms.passiveMode();     // 함수에서 지원하는 작동모드 중 패시브모드 
   pms.sleep();           // PMS 작동 시작을 휴면 모드로 설정 
-   
+
+  pinMode(LIGHTPIN, INPUT);  // 아두이노 A1값을 입력 핀으로 설정
+
 }  
 
 
 void loop() 
 {  
   totaltimenow = millis();
-  if ( totaltimenow - totaltimelast >= 30000 )
-  {
-  totaltimelast = totaltimenow ;
-  dht22start();  // dht22 센서 읽기 함수 
-  
-  readSensorData();   // BCHTS4085 센서 읽기 함수 
-  Serial.println();   // BCHTS4085센서 읽기 함수 끝나고 빈줄 추가 
+    if ( totaltimenow - totaltimelast >= 10000 )
+    {
+      totaltimelast = totaltimenow ;
+      dht22start();  // dht22 센서 읽기 함수 
+      
+      readSensorData();   // BCHTS4085 센서 읽기 함수 
+      Serial.println();   // BCHTS4085센서 읽기 함수 끝나고 빈줄 추가 
 
-  tmp36(); // tmp36센서의 값 처리 함수 호출 
-  }
-  pmsa003();  // PMS 계열 먼지센서 값 처리 함수 호출    
+      tmp36(); // tmp36센서의 값 처리 함수 호출 
+
+      TEMT6000();
+    }
+  
+  pmsa003();  // PMS 계열 먼지센서 값 처리 함수 호출 , 처리 시간이 위 함수들과 안 맞아서 함수내의 시간에 따라 출력    
+  
+  
 }
 
 // ********************************************************************
@@ -154,7 +169,7 @@ void tmp36(void)
   float tmp36temperatureF = (tmp36temperatureC * 9.0 / 5.0) + 32.0; // 화씨는 여기서 직접 float로 정의 했다. 
   Serial.print(tmp36temperatureF); Serial.println(" degrees F");    
   Serial.println ( ) ; 
-    delay ( 1000 ); 
+  //  delay ( 1000 ); 
  }
  // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 // &&&&&&&&&&&&&&&&&&&&&&&  TMP36 센서용  루프내  함수 끝 &&&&&&&&&&&&&&&&&&&&
@@ -329,6 +344,16 @@ void dht22start(void)
       //pms_power = false;     
   }
 
+void TEMT6000(void)
+{
+  readA1 = analogRead(LIGHTPIN);
+  //float convertdigitalsignalA1 = readA1 / 1023.0 ;
+  //float convertdigitalsignalA2 = pow(convertdigitalsignalA1 , 2.0 );
+
+  Serial.println ( " TEMP6000 VAVLUE : " );
+  Serial.print (readA1  );
+  //Serial.print (convertdigitalsignalA2  );
+}
     
    
     
